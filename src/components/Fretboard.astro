@@ -10,8 +10,15 @@
 
 <figure id="fretboard"></figure>
 
+<style>
+  .dot-text {
+    letter-spacing: -3px;
+  }
+</style>
+
 <script>
 	import { Fretboard } from '@moonwave99/fretboard.js';
+  import {getIntervalicFunction} from '../utils';
 
 const colors = {
     "defaultFill": "white",
@@ -59,12 +66,19 @@ const colors = {
     }
   }
 
-	let fretboard = new Fretboard({dotText: (foo) => {console.log(foo); return foo.note;} });
+	let fretboard = new Fretboard({dotText: ({note}) => note});
 	let key;
 	let scale;
 	let indicator = 'note';
+  let dots = []
 	let style = {
-		text: (dot) => dot[indicator],
+		text: (dot) => {
+      if (indicator === 'intervalic-function') {
+        return getIntervalicFunction(dot.interval);
+      }
+
+      return dot[indicator];
+    },
 		fill: (dot, index) =>
 			dot.degree === 1 ? colors.defaultActiveFill : 'white',
 	}
@@ -98,4 +112,14 @@ const colors = {
 		indicator = event.detail;
 		fretboard.style(style);
 	});
+
+  window.addEventListener('setNote', (event) => {
+    console.log(event);
+    const dot = {
+      string: 1,
+      fret: 1,
+      note: event.detail,
+    }
+    fretboard.setDots([dot]).render();
+  })
 </script>

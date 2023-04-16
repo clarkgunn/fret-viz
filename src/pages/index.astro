@@ -8,5 +8,68 @@ import Settings from '../components/Settings.astro';
 	<main>
 		<Fretboard />
 		<Settings />
+		<div>
+      <span id="pitch-label" class="label">Pitch: </span>
+      <span id="pitch" aria-labelledby="pitch-label"></span>
+    </div>
+		<div>
+			<span id="note-label" class="label">Note: </span>
+      <span id="note" aria-labelledby="note-label"></span>
+    </div>
+		<div>
+			<span id="clarity-label" class="label">Clarity: </span>
+      <span id="clarity" aria-labelledby="clarity-label"></span>
+    </div>
+		<button id="resume-button">Resume audio context</button>
 	</main>
 </Layout>
+
+<script>
+import { PitchDetector } from 'pitchy';
+import { Note } from 'tonal';
+
+function setNote(note) {
+	window.dispatchEvent(
+		new CustomEvent(`setNote`, {
+			detail: note
+		})
+	);
+}
+
+function updatePitch(analyserNode, detector, input, sampleRate) {
+  analyserNode.getFloatTimeDomainData(input);
+  const [pitch, clarity] = detector.findPitch(input, sampleRate);
+	const pitchNode = document.getElementById("pitch");
+	const clarityNode = document.getElementById("clarity");
+	const noteNode = document.getElementById("note");
+
+	if (clarity > 0.8 && pitch > 70) {
+		pitchNode.textContent = `${Math.round(pitch)} Hz`;
+		clarityNode.textContent = `${Math.round(clarity * 100)} %`;
+		const note = Note.fromFreq(Math.round(pitch));
+		noteNode.textContent = note;
+		setNote(note);		 
+	}
+
+  window.setTimeout(
+    () => updatePitch(analyserNode, detector, input, sampleRate),
+    100
+  );
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const audioContext = new window.AudioContext();
+  const analyserNode = audioContext.createAnalyser();
+
+  document
+    .getElementById("resume-button")
+    .addEventListener("click", () => audioContext.resume());
+
+  navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+    audioContext.createMediaStreamSource(stream).connect(analyserNode);
+    const detector = PitchDetector.forFloat32Array(analyserNode.fftSize);
+    const input = new Float32Array(detector.inputLength);
+    updatePitch(analyserNode, detector, input, audioContext.sampleRate);
+  });
+});
+</script>

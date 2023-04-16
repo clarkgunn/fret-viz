@@ -31,3 +31,12 @@ const { title } = Astro.props;
 		font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 	}
 </style>
+
+<script>
+	document.querySelectorAll('.dot-text').forEach((el) => {
+		if (el.textContent.includes('♭')) {
+			console.log(el);
+			el.style['letter-spacing'] = '-3px';
+		}
+	});
+</script>

@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@moonwave99/fretboard.js": "^0.2.13",
-    "@spotify/basic-pitch": "^1.0.1",
     "astro": "^2.3.0",
+    "pitchy": "^4.0.7",
     "tonal": "^4.14.0"
   }
 }
