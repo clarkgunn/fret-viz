@@ -5,6 +5,7 @@ export const intervalicFunction = {
   '3m': '♭3',
   '3M': '3',
   '4P': '4',
+  '4A': '♯4',
   '5P': '5',
   '6m': '♭6',
   '6M': '6',
