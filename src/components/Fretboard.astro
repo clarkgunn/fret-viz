@@ -18,6 +18,7 @@
 
 <script>
   import { Fretboard } from '@moonwave99/fretboard.js';
+  import { Note, Interval } from 'tonal';
   import { getIntervalicFunction } from '../utils';
 
   const colors = {
@@ -64,6 +65,8 @@
   let scale = 'minor';
   let indicator = 'intervallic-function';
   let color = colors.defaultActiveStroke;
+  let progressiveDisclosure = false;
+  let interval = 3;
 
   function render() {
     fretboard
@@ -80,10 +83,13 @@
   });
 
   let style = {
-    text: (dot) =>
-      indicator === 'intervallic-function'
+    text: (dot) => {
+      if (progressiveDisclosure && !dot.close) return;
+
+      return indicator === 'intervallic-function'
         ? getIntervalicFunction(dot.interval)
-        : dot[indicator],
+        : dot[indicator];
+    },
     fill: (dot) => (dot.input ? color : 'white'),
   };
 
@@ -91,13 +97,11 @@
 
   window.addEventListener('setKey', (event) => {
     key = event.detail;
-
     render();
   });
 
   window.addEventListener('setScale', (event) => {
     scale = event.detail;
-
     render();
   });
 
@@ -106,10 +110,33 @@
     render();
   });
 
+  window.addEventListener('setProgressiveDisclosure', () => {
+    progressiveDisclosure = document.getElementById(
+      'progressive-disclosure'
+    ).checked;
+    render();
+  });
+
+  window.addEventListener('setInterval', (event) => {
+    interval = event.detail;
+    render();
+  });
+
   window.addEventListener('setNote', (event) => {
     const newDots = fretboard.dots.map((dot) => {
       dot.input = false;
-      if (dot && event.detail === `${dot.note}${dot.octave}`) {
+      dot.close = false;
+
+      const note = `${dot.note}${dot.octave}`;
+
+      if (progressiveDisclosure) {
+        const distance = Interval.distance(note, event.detail);
+        if (Math.abs(Interval.num(distance)) <= interval) {
+          dot.close = true;
+        }
+      }
+
+      if (dot && event.detail === note) {
         dot.input = true;
       }
 

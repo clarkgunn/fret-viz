@@ -26,7 +26,7 @@
       <option value="locrian">Locrian</option>
     </select>
   </fieldset>
-  <fieldset>
+  <fieldset class="vert">
     <legend>Indicator</legend>
     <select name="Indicator" id="indicator" onchange="set(this)">
       <option value="note">Note Name</option>
@@ -34,6 +34,25 @@
       <option value="interval">Interval</option>
       <option value="intervalic-function" selected>Intervalic Function</option>
     </select>
+    <label>
+      Progressive Disclosure
+      <input
+        type="checkbox"
+        name="ProgressiveDisclosure"
+        id="progressive-disclosure"
+        onchange="set(this)"
+        unchecked
+      />
+      <input
+        type="number"
+        name="Interval"
+        id="progressive-disclosure-interval"
+        onchange="set(this)"
+        min="1"
+        max="8"
+        value="3"
+      />
+    </label>
     <label>
       Color
       <input name="Color" type="color" value="#ff636c" onchange="set(this)" />
@@ -55,11 +74,17 @@
 </form>
 
 <script is:inline>
-  function set(select) {
+  function set(el) {
     window.dispatchEvent(
-      new CustomEvent(`set${select.name}`, {
-        detail: select.value,
+      new CustomEvent(`set${el.name}`, {
+        detail: el.value,
       })
     );
   }
 </script>
+
+<style>
+  .vert > * {
+    display: block;
+  }
+</style>
