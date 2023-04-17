@@ -48,13 +48,9 @@ import Settings from '../components/Settings.astro';
     );
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('enable-audio').addEventListener('click', () => {
     const audioContext = new window.AudioContext();
     const analyserNode = audioContext.createAnalyser();
-
-    document
-      .getElementById('resume-button')
-      .addEventListener('click', () => audioContext.resume());
 
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       audioContext.createMediaStreamSource(stream).connect(analyserNode);
