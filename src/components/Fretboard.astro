@@ -19,7 +19,7 @@
 <script>
   import { Fretboard } from '@moonwave99/fretboard.js';
   import { Note, Interval } from 'tonal';
-  import { getIntervalicFunction } from '../utils';
+  import { getIntervallicFunction } from '../utils';
 
   const colors = {
     defaultFill: 'white',
@@ -68,30 +68,46 @@
   let progressiveDisclosure = false;
   let interval = 3;
 
-  function render() {
-    fretboard
-      .renderScale({
-        type: scale,
-        root: key,
-      })
-      .style(style);
-  }
-
   let fretboard = new Fretboard({
-    dotText: ({ note }) => note,
+    // dotText: ({ note }) => note,
     dotStrokeColor: (dot) => (dot.input ? color : colors.defaultStroke),
   });
 
-  let style = {
-    text: (dot) => {
-      if (progressiveDisclosure && !dot.close) return;
+  window.fretboard = fretboard;
 
-      return indicator === 'intervallic-function'
-        ? getIntervalicFunction(dot.interval)
-        : dot[indicator];
-    },
-    fill: (dot) => (dot.input ? color : 'white'),
-  };
+  function render(dots) {
+    if (dots) {
+      fretboard
+        .setDots(dots)
+        .render()
+        .style({
+          text: (dot) => {
+            if (progressiveDisclosure && !dot.close) return;
+
+            return indicator === 'intervallic-function'
+              ? getIntervallicFunction(dot.interval)
+              : dot[indicator];
+          },
+          fill: (dot) => (dot.input ? color : 'white'),
+        });
+    } else {
+      fretboard
+        .renderScale({
+          type: scale,
+          root: key,
+        })
+        .style({
+          text: (dot) => {
+            if (progressiveDisclosure && !dot.close) return;
+
+            return indicator === 'intervallic-function'
+              ? getIntervallicFunction(dot.interval)
+              : dot[indicator];
+          },
+          fill: (dot) => (dot.input ? color : 'white'),
+        });
+    }
+  }
 
   render();
 
@@ -143,7 +159,7 @@
       return dot;
     });
 
-    fretboard.setDots(newDots).render().style(style);
+    render(newDots);
   });
 
   window.addEventListener('setColor', (event) => {

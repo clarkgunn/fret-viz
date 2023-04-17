@@ -1,4 +1,4 @@
-export const intervalicFunction = {
+export const intervallicFunction = {
   '1P': '1',
   '2m': '♭2',
   '2M': '2',

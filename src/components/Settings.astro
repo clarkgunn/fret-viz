@@ -32,16 +32,16 @@
       <option value="note">Note Name</option>
       <option value="degree">Degree</option>
       <option value="interval">Interval</option>
-      <option value="intervalic-function" selected>Intervalic Function</option>
+      <option value="intervallic-function" selected>Intervallic Function</option
+      >
     </select>
     <label>
-      Progressive Disclosure
+      Progressive Disclosure:
       <input
         type="checkbox"
         name="ProgressiveDisclosure"
         id="progressive-disclosure"
-        onchange="set(this)"
-        unchecked
+        onchange="setProgressiveDisclosure(this)"
       />
       <input
         type="number"
@@ -51,6 +51,7 @@
         min="1"
         max="8"
         value="3"
+        disabled="true"
       />
     </label>
     <label>
@@ -58,19 +59,20 @@
       <input name="Color" type="color" value="#ff636c" onchange="set(this)" />
     </label>
   </fieldset>
-  <div>
+  <fieldset>
+    <legend>Debug</legend>
     <span id="pitch-label" class="label">Pitch:</span>
     <span id="pitch" aria-labelledby="pitch-label"></span>
-  </div>
-  <div>
-    <span id="note-label" class="label">Note:</span>
-    <span id="note" aria-labelledby="note-label"></span>
-  </div>
-  <div>
-    <span id="clarity-label" class="label">Clarity:</span>
-    <span id="clarity" aria-labelledby="clarity-label"></span>
-  </div>
-  <button id="resume-button" type="button">Resume audio context</button>
+    <div>
+      <span id="note-label" class="label">Note:</span>
+      <span id="note" aria-labelledby="note-label"></span>
+    </div>
+    <div>
+      <span id="clarity-label" class="label">Clarity:</span>
+      <span id="clarity" aria-labelledby="clarity-label"></span>
+    </div>
+    <button id="resume-button" type="button">Resume audio context</button>
+  </fieldset>
 </form>
 
 <script is:inline>
@@ -81,10 +83,37 @@
       })
     );
   }
+
+  function setProgressiveDisclosure(el) {
+    const input = document.getElementById('progressive-disclosure-interval');
+
+    if (el.checked) {
+      input.removeAttribute('disabled');
+    } else {
+      input.setAttribute('disabled', 'true');
+    }
+
+    set(el);
+  }
 </script>
 
 <style>
-  .vert > * {
-    display: block;
+  form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-content: stretch;
+    margin-inline: 5rem;
+  }
+
+  fieldset > * {
+    margin: 0.25rem 0.5rem;
+  }
+
+  .vert {
+    display: flex;
+    flex-direction: column;
   }
 </style>

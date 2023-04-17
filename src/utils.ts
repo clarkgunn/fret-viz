@@ -1,5 +1,5 @@
-import { intervalicFunction } from './constants';
+import { intervallicFunction } from './constants';
 
-export function getIntervalicFunction(interval) {
-  return intervalicFunction[interval];
+export function getIntervallicFunction(interval) {
+  return intervallicFunction[interval];
 }

@@ -26,13 +26,15 @@ import Settings from '../components/Settings.astro';
   function updatePitch(analyserNode, detector, input, sampleRate) {
     analyserNode.getFloatTimeDomainData(input);
     const [pitch, clarity] = detector.findPitch(input, sampleRate);
-    const pitchNode = document.getElementById('pitch');
-    const clarityNode = document.getElementById('clarity');
-    const noteNode = document.getElementById('note');
 
     if (clarity > 0.8 && pitch > 80) {
+      const pitchNode = document.getElementById('pitch');
+      const clarityNode = document.getElementById('clarity');
+      const noteNode = document.getElementById('note');
+
       pitchNode.textContent = `${Math.round(pitch)} Hz`;
       clarityNode.textContent = `${Math.round(clarity * 100)} %`;
+
       const note = Note.fromFreq(Math.round(pitch));
       noteNode.textContent = note;
       setNote(note);
@@ -42,7 +44,7 @@ import Settings from '../components/Settings.astro';
 
     window.setTimeout(
       () => updatePitch(analyserNode, detector, input, sampleRate),
-      100
+      75
     );
   }
 
