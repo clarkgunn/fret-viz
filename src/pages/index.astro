@@ -13,8 +13,8 @@ import Settings from '../components/Settings.astro';
 
 <script>
   import { PitchDetector } from 'pitchy';
-  import { Note, Interval } from 'tonal';
-  console.log(Interval.num(Interval.distance('C4', 'D6')));
+  import { Note } from 'tonal';
+
   function setNote(note) {
     window.dispatchEvent(
       new CustomEvent(`setNote`, {
